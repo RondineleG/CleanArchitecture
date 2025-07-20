@@ -1,10 +1,10 @@
 ﻿using Application.Behaviours;
 using Application.Interfaces.Repositories;
+using Application.Mappings;
 using Application.Wrappers;
 
-using AutoMapper;
-
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,14 +19,11 @@ public class GetAllProductsQuery
 
 public class GetAllProductsService
 {
-    public GetAllProductsService(IProductRepositoryAsync productRepository, IMapper mapper, IRequestPipelineExecutor pipelineExecutor)
+    public GetAllProductsService(IProductRepositoryAsync productRepository, IRequestPipelineExecutor pipelineExecutor)
     {
         _productRepository = productRepository;
-        _mapper = mapper;
         _pipelineExecutor = pipelineExecutor;
     }
-
-    private readonly IMapper _mapper;
 
     private readonly IRequestPipelineExecutor _pipelineExecutor;
 
@@ -43,9 +40,9 @@ public class GetAllProductsService
 
     private async Task<PagedResponse<IEnumerable<GetAllProductsViewModel>>> HandleAsync(GetAllProductsQuery request, CancellationToken cancellationToken)
     {
-        var filter = _mapper.Map<GetAllProductsParameter>(request);
+        var filter = request.ToParameter();
         var products = await _productRepository.GetPagedReponseAsync(filter.PageNumber, filter.PageSize);
-        var productViewModels = _mapper.Map<IEnumerable<GetAllProductsViewModel>>(products);
+        var productViewModels = products.Select(p => p.ToViewModel());
         return new PagedResponse<IEnumerable<GetAllProductsViewModel>>(productViewModels, filter.PageNumber, filter.PageSize);
     }
 }

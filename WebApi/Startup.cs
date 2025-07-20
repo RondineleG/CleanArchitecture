@@ -57,9 +57,9 @@ public class Startup
         services.AddPersistenceInfrastructure(_config);
         services.AddSharedInfrastructure(_config);
         services.AddSwaggerExtension();
-        _ = services.AddControllers();
+        services.AddControllers();
         services.AddApiVersioningExtension();
-        _ = services.AddHealthChecks();
-        _ = services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
+        services.AddHealthChecks();
+        services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
     }
 }

@@ -11,7 +11,6 @@ public static class ServiceExtensions
 {
     public static void AddApplicationLayer(this IServiceCollection services)
     {
-        _ = services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddScoped<IRequestPipelineExecutor, ValidationBehaviour>();
         services.AddRequestValidators(Assembly.GetExecutingAssembly());
     }

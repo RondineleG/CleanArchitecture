@@ -1,10 +1,7 @@
 ﻿using Application.Behaviours;
 using Application.Interfaces.Repositories;
+using Application.Mappings;
 using Application.Wrappers;
-
-using AutoMapper;
-
-using Domain.Entities;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,15 +23,11 @@ public class CreateProductService
 {
     public CreateProductService(
         IProductRepositoryAsync productRepository,
-        IMapper mapper,
         IRequestPipelineExecutor pipelineExecutor)
     {
         _productRepository = productRepository;
-        _mapper = mapper;
         _pipelineExecutor = pipelineExecutor;
     }
-
-    private readonly IMapper _mapper;
 
     private readonly IRequestPipelineExecutor _pipelineExecutor;
 
@@ -51,7 +44,7 @@ public class CreateProductService
 
     private async Task<Response<int>> HandleAsync(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        Product product = _mapper.Map<Product>(request);
+        var product = request.ToEntity();
         await _productRepository.AddAsync(product);
         return new Response<int>(product.Id);
     }
