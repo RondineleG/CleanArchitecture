@@ -1,4 +1,5 @@
 ﻿using Application.Behaviours;
+using Application.Interfaces;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,29 @@ public static class ServiceExtensions
     {
         services.AddScoped<IRequestPipelineExecutor, ValidationBehaviour>();
         services.AddRequestValidators(Assembly.GetExecutingAssembly());
+        services.AddRequestHandlers(Assembly.GetExecutingAssembly());
+    }
+
+    private static IServiceCollection AddRequestHandlers(this IServiceCollection services, Assembly assembly)
+    {
+        var validatorInterfaceType = typeof(IRequestHandler<,>);
+
+        var types = assembly.DefinedTypes
+            .Where(type => !type.IsAbstract && !type.IsInterface)
+            .Select(type => new
+            {
+                Implementation = type.AsType(),
+                Service = type.GetInterfaces()
+                    .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == validatorInterfaceType)
+            })
+            .Where(x => x.Service != null);
+
+        foreach (var typePair in types)
+        {
+            services.AddTransient(typePair.Service, typePair.Implementation);
+        }
+
+        return services;
     }
 
     private static IServiceCollection AddRequestValidators(this IServiceCollection services, Assembly assembly)

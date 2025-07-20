@@ -1,5 +1,6 @@
 ﻿using Application.Behaviours;
 using Application.Exceptions;
+using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 
@@ -13,7 +14,7 @@ public class DeleteProductByIdCommand
     public int Id { get; set; }
 }
 
-public class DeleteProductByIdService
+public class DeleteProductByIdService : IRequestHandler<DeleteProductByIdCommand, Response<int>>
 {
     public DeleteProductByIdService(
         IProductRepositoryAsync productRepository,

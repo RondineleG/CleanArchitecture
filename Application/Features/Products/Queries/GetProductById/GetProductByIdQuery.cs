@@ -1,5 +1,6 @@
 ﻿using Application.Behaviours;
 using Application.Exceptions;
+using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 
@@ -15,7 +16,7 @@ public class GetProductByIdQuery
     public int Id { get; set; }
 }
 
-public class GetProductByIdService
+public class GetProductByIdService : IRequestHandler<GetProductByIdQuery, Response<Product>>
 {
     public GetProductByIdService(IProductRepositoryAsync productRepository, IRequestPipelineExecutor pipelineExecutor)
     {

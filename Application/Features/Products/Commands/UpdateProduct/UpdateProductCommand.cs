@@ -1,5 +1,6 @@
 ﻿using Application.Behaviours;
 using Application.Exceptions;
+using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 
@@ -19,7 +20,7 @@ public class UpdateProductCommand
     public decimal Rate { get; set; }
 }
 
-public class UpdateProductService
+public class UpdateProductService : IRequestHandler<UpdateProductCommand, Response<int>>
 {
     public UpdateProductService(IProductRepositoryAsync productRepository, IRequestPipelineExecutor pipelineExecutor)
     {

@@ -1,4 +1,5 @@
 ﻿using Application.Behaviours;
+using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Mappings;
 using Application.Wrappers;
@@ -17,7 +18,7 @@ public class GetAllProductsQuery
     public int PageSize { get; set; }
 }
 
-public class GetAllProductsService
+public class GetAllProductsService : IRequestHandler<GetAllProductsQuery, PagedResponse<IEnumerable<GetAllProductsViewModel>>>
 {
     public GetAllProductsService(IProductRepositoryAsync productRepository, IRequestPipelineExecutor pipelineExecutor)
     {

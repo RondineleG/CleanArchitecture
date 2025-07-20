@@ -1,4 +1,5 @@
 ﻿using Application.Behaviours;
+using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Mappings;
 using Application.Wrappers;
@@ -19,7 +20,7 @@ public class CreateProductCommand
     public decimal Rate { get; set; }
 }
 
-public class CreateProductService
+public class CreateProductService : IRequestHandler<CreateProductCommand, Response<int>>
 {
     public CreateProductService(
         IProductRepositoryAsync productRepository,
@@ -33,7 +34,7 @@ public class CreateProductService
 
     private readonly IProductRepositoryAsync _productRepository;
 
-    public Task<Response<int>> CreateAsync(CreateProductCommand request, CancellationToken cancellationToken)
+    public Task<Response<int>> ExecuteAsync(CreateProductCommand request, CancellationToken cancellationToken)
     {
         return _pipelineExecutor.ExecuteAsync(
             request,
