@@ -18,14 +18,15 @@ namespace Infrastructure.Shared.Services;
 
 public class EmailService : IEmailService
 {
-    public MailSettings _mailSettings { get; }
-    public ILogger<EmailService> _logger { get; }
-
     public EmailService(IOptions<MailSettings> mailSettings, ILogger<EmailService> logger)
     {
         _mailSettings = mailSettings.Value;
         _logger = logger;
     }
+
+    public ILogger<EmailService> _logger { get; }
+
+    public MailSettings _mailSettings { get; }
 
     public async Task SendAsync(EmailRequest request)
     {
@@ -48,7 +49,6 @@ public class EmailService : IEmailService
             smtp.Authenticate(_mailSettings.SmtpUser, _mailSettings.SmtpPass);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
-
         }
         catch (System.Exception ex)
         {

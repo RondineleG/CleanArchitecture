@@ -34,7 +34,6 @@ public static class DefaultSuperAdmin
                 _ = await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
                 _ = await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());
             }
-
         }
     }
 }

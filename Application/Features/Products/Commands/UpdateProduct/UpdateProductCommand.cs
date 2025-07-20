@@ -1,43 +1,58 @@
-﻿using Application.Exceptions;
+﻿using Application.Behaviours;
+using Application.Exceptions;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
-
-using MediatR;
 
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.Features.Products.Commands.UpdateProduct;
 
-public class UpdateProductCommand : IRequest<Response<int>>
+public class UpdateProductCommand
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
     public string Description { get; set; }
-    public decimal Rate { get; set; }
-    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Response<int>>
-    {
-        private readonly IProductRepositoryAsync _productRepository;
-        public UpdateProductCommandHandler(IProductRepositoryAsync productRepository)
-        {
-            _productRepository = productRepository;
-        }
-        public async Task<Response<int>> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
-        {
-            Domain.Entities.Product product = await _productRepository.GetByIdAsync(command.Id);
 
-            if (product == null)
-            {
-                throw new ApiException($"Product Not Found.");
-            }
-            else
-            {
-                product.Name = command.Name;
-                product.Rate = command.Rate;
-                product.Description = command.Description;
-                await _productRepository.UpdateAsync(product);
-                return new Response<int>(product.Id);
-            }
+    public int Id { get; set; }
+
+    public string Name { get; set; }
+
+    public decimal Rate { get; set; }
+}
+
+public class UpdateProductService
+{
+    public UpdateProductService(IProductRepositoryAsync productRepository, IRequestPipelineExecutor pipelineExecutor)
+    {
+        _productRepository = productRepository;
+        _pipelineExecutor = pipelineExecutor;
+    }
+
+    private readonly IRequestPipelineExecutor _pipelineExecutor;
+
+    private readonly IProductRepositoryAsync _productRepository;
+
+    public Task<Response<int>> ExecuteAsync(UpdateProductCommand request, CancellationToken cancellationToken = default)
+    {
+        return _pipelineExecutor.ExecuteAsync(
+            request,
+            next: () => HandleAsync(request, cancellationToken),
+            cancellationToken
+        );
+    }
+
+    private async Task<Response<int>> HandleAsync(UpdateProductCommand command, CancellationToken cancellationToken)
+    {
+        var product = await _productRepository.GetByIdAsync(command.Id);
+        if (product == null)
+        {
+            throw new ApiException("Product Not Found.");
         }
+
+        product.Name = command.Name;
+        product.Rate = command.Rate;
+        product.Description = command.Description;
+
+        await _productRepository.UpdateAsync(product);
+        return new Response<int>(product.Id);
     }
 }

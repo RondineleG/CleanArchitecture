@@ -13,15 +13,17 @@ namespace Infrastructure.Persistence.Contexts;
 
 public class ApplicationDbContext : DbContext
 {
-    private readonly IDateTimeService _dateTime;
-    private readonly IAuthenticatedUserService _authenticatedUser;
-
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDateTimeService dateTime, IAuthenticatedUserService authenticatedUser) : base(options)
     {
         ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         _dateTime = dateTime;
         _authenticatedUser = authenticatedUser;
     }
+
+    private readonly IAuthenticatedUserService _authenticatedUser;
+
+    private readonly IDateTimeService _dateTime;
+
     public DbSet<Product> Products { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
@@ -34,6 +36,7 @@ public class ApplicationDbContext : DbContext
                 entry.Entity.Created = _dateTime.NowUtc;
                 entry.Entity.CreatedBy = _authenticatedUser.UserId;
                 break;
+
                 case EntityState.Modified:
                 entry.Entity.LastModified = _dateTime.NowUtc;
                 entry.Entity.LastModifiedBy = _authenticatedUser.UserId;
@@ -42,6 +45,7 @@ public class ApplicationDbContext : DbContext
         }
         return base.SaveChangesAsync(cancellationToken);
     }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         //All Decimals will have 18,6 Range

@@ -18,23 +18,12 @@ namespace WebApi;
 
 public class Startup
 {
-    public IConfiguration _config { get; }
     public Startup(IConfiguration configuration)
     {
         _config = configuration;
     }
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddApplicationLayer();
-        services.AddIdentityInfrastructure(_config);
-        services.AddPersistenceInfrastructure(_config);
-        services.AddSharedInfrastructure(_config);
-        services.AddSwaggerExtension();
-        _ = services.AddControllers();
-        services.AddApiVersioningExtension();
-        _ = services.AddHealthChecks();
-        _ = services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
-    }
+
+    public IConfiguration _config { get; }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
@@ -59,5 +48,18 @@ public class Startup
          {
              _ = endpoints.MapControllers();
          });
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddApplicationLayer();
+        services.AddIdentityInfrastructure(_config);
+        services.AddPersistenceInfrastructure(_config);
+        services.AddSharedInfrastructure(_config);
+        services.AddSwaggerExtension();
+        _ = services.AddControllers();
+        services.AddApiVersioningExtension();
+        _ = services.AddHealthChecks();
+        _ = services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
     }
 }

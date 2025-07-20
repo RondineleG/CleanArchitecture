@@ -12,12 +12,12 @@ namespace Infrastructure.Persistence.Repositories;
 
 public class ProductRepositoryAsync : GenericRepositoryAsync<Product>, IProductRepositoryAsync
 {
-    private readonly DbSet<Product> _products;
-
     public ProductRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
     {
         _products = dbContext.Set<Product>();
     }
+
+    private readonly DbSet<Product> _products;
 
     public Task<bool> IsUniqueBarcodeAsync(string barcode)
     {

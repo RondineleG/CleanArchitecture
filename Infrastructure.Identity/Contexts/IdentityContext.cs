@@ -11,6 +11,7 @@ public class IdentityContext : IdentityDbContext<ApplicationUser>
     public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
     {
     }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -42,7 +43,6 @@ public class IdentityContext : IdentityDbContext<ApplicationUser>
         _ = builder.Entity<IdentityRoleClaim<string>>(entity =>
         {
             _ = entity.ToTable("RoleClaims");
-
         });
 
         _ = builder.Entity<IdentityUserToken<string>>(entity =>

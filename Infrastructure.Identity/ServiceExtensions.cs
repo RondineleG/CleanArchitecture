@@ -34,9 +34,13 @@ public static class ServiceExtensions
                 configuration.GetConnectionString("IdentityConnection"),
                 b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)));
         _ = services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
+
         #region Services
+
         _ = services.AddTransient<IAccountService, AccountService>();
-        #endregion
+
+        #endregion Services
+
         _ = services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
         _ = services.AddAuthentication(options =>
         {

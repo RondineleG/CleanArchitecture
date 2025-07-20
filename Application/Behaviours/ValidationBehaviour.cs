@@ -1,42 +1,33 @@
-﻿using FluentValidation;
-
-using MediatR;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.Behaviours;
 
-public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public class ValidationBehaviour : IRequestPipelineExecutor
 {
-    private readonly IEnumerable<IValidator<TRequest>> _validators;
-
-    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+    public ValidationBehaviour(IServiceProvider provider)
     {
-        _validators = validators;
+        _provider = provider;
     }
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-    {
-        if (_validators.Any())
-        {
-            ValidationContext<TRequest> context = new(request);
-            FluentValidation.Results.ValidationResult[] validationResults = await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-            List<FluentValidation.Results.ValidationFailure> failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
+    private readonly IServiceProvider _provider;
 
-            if (failures.Count != 0)
-            {
-                throw new Exceptions.ValidationException();
-            }
-        }
-        return await next();
+    public async Task<TResponse> ExecuteAsync<TRequest, TResponse>(TRequest request, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    {
+        var validators = _provider.GetServices<IRequestValidator<TRequest>>();
+        var pipeline = new RequestValidationPipeline<TRequest, TResponse>(validators, next);
+        return await pipeline.ExecuteAsync(request, cancellationToken);
     }
 }
 
+public interface IRequestPipelineExecutor
+{
+    Task<TResponse> ExecuteAsync<TRequest, TResponse>(TRequest request, Func<Task<TResponse>> next, CancellationToken cancellationToken = default);
+}
 
 public interface IRequestValidator<TRequest>
 {
@@ -45,14 +36,15 @@ public interface IRequestValidator<TRequest>
 
 public class RequestValidationPipeline<TRequest, TResponse>
 {
-    private readonly IEnumerable<IRequestValidator<TRequest>> _validators;
-    private readonly Func<Task<TResponse>> _next;
-
     public RequestValidationPipeline(IEnumerable<IRequestValidator<TRequest>> validators, Func<Task<TResponse>> next)
     {
         _validators = validators;
         _next = next;
     }
+
+    private readonly Func<Task<TResponse>> _next;
+
+    private readonly IEnumerable<IRequestValidator<TRequest>> _validators;
 
     public async Task<TResponse> ExecuteAsync(TRequest request, CancellationToken cancellationToken = default)
     {
@@ -72,4 +64,3 @@ public class RequestValidationPipeline<TRequest, TResponse>
         return await _next();
     }
 }
-

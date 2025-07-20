@@ -1,9 +1,8 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.Behaviours;
+using Application.Interfaces.Repositories;
 using Application.Wrappers;
 
 using AutoMapper;
-
-using MediatR;
 
 using System.Collections.Generic;
 using System.Threading;
@@ -11,26 +10,42 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Products.Queries.GetAllProducts;
 
-public class GetAllProductsQuery : IRequest<PagedResponse<IEnumerable<GetAllProductsViewModel>>>
+public class GetAllProductsQuery
 {
     public int PageNumber { get; set; }
+
     public int PageSize { get; set; }
 }
-public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, PagedResponse<IEnumerable<GetAllProductsViewModel>>>
+
+public class GetAllProductsService
 {
-    private readonly IProductRepositoryAsync _productRepository;
-    private readonly IMapper _mapper;
-    public GetAllProductsQueryHandler(IProductRepositoryAsync productRepository, IMapper mapper)
+    public GetAllProductsService(IProductRepositoryAsync productRepository, IMapper mapper, IRequestPipelineExecutor pipelineExecutor)
     {
         _productRepository = productRepository;
         _mapper = mapper;
+        _pipelineExecutor = pipelineExecutor;
     }
 
-    public async Task<PagedResponse<IEnumerable<GetAllProductsViewModel>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+    private readonly IMapper _mapper;
+
+    private readonly IRequestPipelineExecutor _pipelineExecutor;
+
+    private readonly IProductRepositoryAsync _productRepository;
+
+    public Task<PagedResponse<IEnumerable<GetAllProductsViewModel>>> ExecuteAsync(GetAllProductsQuery request, CancellationToken cancellationToken = default)
     {
-        GetAllProductsParameter validFilter = _mapper.Map<GetAllProductsParameter>(request);
-        IReadOnlyList<Domain.Entities.Product> product = await _productRepository.GetPagedReponseAsync(validFilter.PageNumber, validFilter.PageSize);
-        IEnumerable<GetAllProductsViewModel> productViewModel = _mapper.Map<IEnumerable<GetAllProductsViewModel>>(product);
-        return new PagedResponse<IEnumerable<GetAllProductsViewModel>>(productViewModel, validFilter.PageNumber, validFilter.PageSize);
+        return _pipelineExecutor.ExecuteAsync(
+            request,
+            next: () => HandleAsync(request, cancellationToken),
+            cancellationToken
+        );
+    }
+
+    private async Task<PagedResponse<IEnumerable<GetAllProductsViewModel>>> HandleAsync(GetAllProductsQuery request, CancellationToken cancellationToken)
+    {
+        var filter = _mapper.Map<GetAllProductsParameter>(request);
+        var products = await _productRepository.GetPagedReponseAsync(filter.PageNumber, filter.PageSize);
+        var productViewModels = _mapper.Map<IEnumerable<GetAllProductsViewModel>>(products);
+        return new PagedResponse<IEnumerable<GetAllProductsViewModel>>(productViewModels, filter.PageNumber, filter.PageSize);
     }
 }

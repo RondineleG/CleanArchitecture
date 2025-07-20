@@ -21,10 +21,13 @@ public static class ServiceRegistration
            options.UseSqlServer(
                configuration.GetConnectionString("DefaultConnection"),
                b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
         #region Repositories
+
         _ = services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
         _ = services.AddTransient(typeof(IGenericRepositoryAsync<,>), typeof(GenericRepositoryAsync<,>));
         _ = services.AddTransient<IProductRepositoryAsync, ProductRepositoryAsync>();
-        #endregion
+
+        #endregion Repositories
     }
 }

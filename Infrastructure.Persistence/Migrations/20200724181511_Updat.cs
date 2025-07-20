@@ -6,6 +6,12 @@ namespace Infrastructure.Persistence.Migrations;
 
 public partial class Updat : Migration
 {
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        _ = migrationBuilder.DropTable(
+            name: "Products");
+    }
+
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         _ = migrationBuilder.CreateTable(
@@ -27,11 +33,5 @@ public partial class Updat : Migration
             {
                 _ = table.PrimaryKey("PK_Products", x => x.Id);
             });
-    }
-
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
-        _ = migrationBuilder.DropTable(
-            name: "Products");
     }
 }

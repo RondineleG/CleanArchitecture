@@ -28,12 +28,6 @@ namespace Infrastructure.Identity.Services;
 
 public class AccountService : IAccountService
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly IEmailService _emailService;
-    private readonly JWTSettings _jwtSettings;
-    private readonly IDateTimeService _dateTimeService;
     public AccountService(UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IOptions<JWTSettings> jwtSettings,
@@ -48,6 +42,18 @@ public class AccountService : IAccountService
         _signInManager = signInManager;
         this._emailService = emailService;
     }
+
+    private readonly IDateTimeService _dateTimeService;
+
+    private readonly IEmailService _emailService;
+
+    private readonly JWTSettings _jwtSettings;
+
+    private readonly RoleManager<IdentityRole> _roleManager;
+
+    private readonly SignInManager<ApplicationUser> _signInManager;
+
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress)
     {
@@ -79,6 +85,38 @@ public class AccountService : IAccountService
         RefreshToken refreshToken = GenerateRefreshToken(ipAddress);
         response.RefreshToken = refreshToken.Token;
         return new Response<AuthenticationResponse>(response, $"Authenticated {user.UserName}");
+    }
+
+    public async Task<Response<string>> ConfirmEmailAsync(string userId, string code)
+    {
+        ApplicationUser user = await _userManager.FindByIdAsync(userId);
+        code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+        IdentityResult result = await _userManager.ConfirmEmailAsync(user, code);
+        return result.Succeeded
+            ? new Response<string>(user.Id, message: $"Account Confirmed for {user.Email}. You can now use the /api/Account/authenticate endpoint.")
+            : throw new ApiException($"An error occured while confirming {user.Email}.");
+    }
+
+    public async Task ForgotPassword(ForgotPasswordRequest model, string origin)
+    {
+        ApplicationUser account = await _userManager.FindByEmailAsync(model.Email);
+
+        // always return ok response to prevent email enumeration
+        if (account == null)
+        {
+            return;
+        }
+
+        string code = await _userManager.GeneratePasswordResetTokenAsync(account);
+        string route = "api/account/reset-password/";
+        _ = new Uri(string.Concat($"{origin}/", route));
+        EmailRequest emailRequest = new()
+        {
+            Body = $"You reset token is - {code}",
+            To = model.Email,
+            Subject = "Reset Password",
+        };
+        await _emailService.SendAsync(emailRequest);
     }
 
     public async Task<Response<string>> RegisterAsync(RegisterRequest request, string origin)
@@ -118,6 +156,20 @@ public class AccountService : IAccountService
         }
     }
 
+    public async Task<Response<string>> ResetPassword(ResetPasswordRequest model)
+    {
+        ApplicationUser account = await _userManager.FindByEmailAsync(model.Email);
+        if (account == null)
+        {
+            throw new ApiException($"No Accounts Registered with {model.Email}.");
+        }
+
+        IdentityResult result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password);
+        return result.Succeeded
+            ? new Response<string>(model.Email, message: $"Password Resetted.")
+            : throw new ApiException($"Error occured while reseting the password.");
+    }
+
     private async Task<JwtSecurityToken> GenerateJWToken(ApplicationUser user)
     {
         IList<Claim> userClaims = await _userManager.GetClaimsAsync(user);
@@ -155,6 +207,17 @@ public class AccountService : IAccountService
         return jwtSecurityToken;
     }
 
+    private RefreshToken GenerateRefreshToken(string ipAddress)
+    {
+        return new RefreshToken
+        {
+            Token = RandomTokenString(),
+            Expires = DateTime.UtcNow.AddDays(7),
+            Created = DateTime.UtcNow,
+            CreatedByIp = ipAddress
+        };
+    }
+
     private string RandomTokenString()
     {
         using RNGCryptoServiceProvider rngCryptoServiceProvider = new();
@@ -174,62 +237,5 @@ public class AccountService : IAccountService
         verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
         //Email Service Call Here
         return verificationUri;
-    }
-
-    public async Task<Response<string>> ConfirmEmailAsync(string userId, string code)
-    {
-        ApplicationUser user = await _userManager.FindByIdAsync(userId);
-        code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-        IdentityResult result = await _userManager.ConfirmEmailAsync(user, code);
-        return result.Succeeded
-            ? new Response<string>(user.Id, message: $"Account Confirmed for {user.Email}. You can now use the /api/Account/authenticate endpoint.")
-            : throw new ApiException($"An error occured while confirming {user.Email}.");
-    }
-
-    private RefreshToken GenerateRefreshToken(string ipAddress)
-    {
-        return new RefreshToken
-        {
-            Token = RandomTokenString(),
-            Expires = DateTime.UtcNow.AddDays(7),
-            Created = DateTime.UtcNow,
-            CreatedByIp = ipAddress
-        };
-    }
-
-    public async Task ForgotPassword(ForgotPasswordRequest model, string origin)
-    {
-        ApplicationUser account = await _userManager.FindByEmailAsync(model.Email);
-
-        // always return ok response to prevent email enumeration
-        if (account == null)
-        {
-            return;
-        }
-
-        string code = await _userManager.GeneratePasswordResetTokenAsync(account);
-        string route = "api/account/reset-password/";
-        _ = new Uri(string.Concat($"{origin}/", route));
-        EmailRequest emailRequest = new()
-        {
-            Body = $"You reset token is - {code}",
-            To = model.Email,
-            Subject = "Reset Password",
-        };
-        await _emailService.SendAsync(emailRequest);
-    }
-
-    public async Task<Response<string>> ResetPassword(ResetPasswordRequest model)
-    {
-        ApplicationUser account = await _userManager.FindByEmailAsync(model.Email);
-        if (account == null)
-        {
-            throw new ApiException($"No Accounts Registered with {model.Email}.");
-        }
-
-        IdentityResult result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password);
-        return result.Succeeded
-            ? new Response<string>(model.Email, message: $"Password Resetted.")
-            : throw new ApiException($"Error occured while reseting the password.");
     }
 }

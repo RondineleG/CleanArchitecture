@@ -13,12 +13,12 @@ namespace WebApi.Middlewares;
 
 public class ErrorHandlerMiddleware
 {
-    private readonly RequestDelegate _next;
-
     public ErrorHandlerMiddleware(RequestDelegate next)
     {
         _next = next;
     }
+
+    private readonly RequestDelegate _next;
 
     public async Task Invoke(HttpContext context)
     {
@@ -38,15 +38,18 @@ public class ErrorHandlerMiddleware
                 // custom application error
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
                 break;
+
                 case ValidationException e:
                 // custom application error
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
                 responseModel.Errors = e.Errors;
                 break;
+
                 case KeyNotFoundException:
                 // not found error
                 response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;
+
                 default:
                 // unhandled error
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;

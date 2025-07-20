@@ -16,7 +16,15 @@ namespace WebApi;
 
 public class Program
 {
-    public async static Task Main(string[] args)
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+        .UseSerilog() //Uses Serilog instead of default .NET Logger
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                _ = webBuilder.UseStartup<Startup>();
+            });
+
+    public static async Task Main(string[] args)
     {
         //Read Configuration from appSettings
         IConfigurationRoot config = new ConfigurationBuilder()
@@ -54,11 +62,4 @@ public class Program
         }
         host.Run();
     }
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-        .UseSerilog() //Uses Serilog instead of default .NET Logger
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                _ = webBuilder.UseStartup<Startup>();
-            });
 }

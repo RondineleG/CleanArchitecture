@@ -6,6 +6,37 @@ namespace Infrastructure.Identity.Migrations;
 
 public partial class NewSchema : Migration
 {
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        _ = migrationBuilder.DropTable(
+            name: "RoleClaims",
+            schema: "Identity");
+
+        _ = migrationBuilder.DropTable(
+            name: "UserClaims",
+            schema: "Identity");
+
+        _ = migrationBuilder.DropTable(
+            name: "UserLogins",
+            schema: "Identity");
+
+        _ = migrationBuilder.DropTable(
+            name: "UserRoles",
+            schema: "Identity");
+
+        _ = migrationBuilder.DropTable(
+            name: "UserTokens",
+            schema: "Identity");
+
+        _ = migrationBuilder.DropTable(
+            name: "Role",
+            schema: "Identity");
+
+        _ = migrationBuilder.DropTable(
+            name: "User",
+            schema: "Identity");
+    }
+
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         _ = migrationBuilder.EnsureSchema(
@@ -216,36 +247,5 @@ public partial class NewSchema : Migration
             schema: "Identity",
             table: "UserRoles",
             column: "RoleId");
-    }
-
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
-        _ = migrationBuilder.DropTable(
-            name: "RoleClaims",
-            schema: "Identity");
-
-        _ = migrationBuilder.DropTable(
-            name: "UserClaims",
-            schema: "Identity");
-
-        _ = migrationBuilder.DropTable(
-            name: "UserLogins",
-            schema: "Identity");
-
-        _ = migrationBuilder.DropTable(
-            name: "UserRoles",
-            schema: "Identity");
-
-        _ = migrationBuilder.DropTable(
-            name: "UserTokens",
-            schema: "Identity");
-
-        _ = migrationBuilder.DropTable(
-            name: "Role",
-            schema: "Identity");
-
-        _ = migrationBuilder.DropTable(
-            name: "User",
-            schema: "Identity");
     }
 }

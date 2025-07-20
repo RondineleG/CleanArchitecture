@@ -31,7 +31,6 @@ public static class DefaultBasicUser
                 _ = await userManager.CreateAsync(defaultUser, "123Pa$$word!");
                 _ = await userManager.AddToRoleAsync(defaultUser, Roles.Basic.ToString());
             }
-
         }
     }
 }

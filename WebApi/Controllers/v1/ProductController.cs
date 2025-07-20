@@ -7,51 +7,78 @@ using Application.Features.Products.Queries.GetProductById;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using System.Threading;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using WebApi.Controllers;
 
-namespace WebApi.Controllers.v1;
-
-[ApiVersion("1.0")]
 public class ProductController : BaseApiController
 {
-    // GET: api/<controller>
-    [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] GetAllProductsParameter filter)
+    public ProductController(
+        CreateProductService createProductService,
+        DeleteProductByIdService deleteProductService,
+        UpdateProductService updateProductService,
+        GetAllProductsService getAllProductsService,
+        GetProductByIdService getProductByIdService)
     {
-
-        return Ok(await Mediator.Send(new GetAllProductsQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+        _createProductService = createProductService;
+        _deleteProductService = deleteProductService;
+        _updateProductService = updateProductService;
+        _getAllProductsService = getAllProductsService;
+        _getProductByIdService = getProductByIdService;
     }
 
-    // GET api/<controller>/5
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
-    {
-        return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));
-    }
+    private readonly CreateProductService _createProductService;
 
-    // POST api/<controller>
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> Post(CreateProductCommand command)
-    {
-        return Ok(await Mediator.Send(command));
-    }
+    private readonly DeleteProductByIdService _deleteProductService;
 
-    // PUT api/<controller>/5
-    [HttpPut("{id}")]
-    [Authorize]
-    public async Task<IActionResult> Put(int id, UpdateProductCommand command)
-    {
-        return id != command.Id ? BadRequest() : Ok(await Mediator.Send(command));
-    }
+    private readonly GetAllProductsService _getAllProductsService;
 
-    // DELETE api/<controller>/5
+    private readonly GetProductByIdService _getProductByIdService;
+
+    private readonly UpdateProductService _updateProductService;
+
     [HttpDelete("{id}")]
     [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
-        return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
+        var command = new DeleteProductByIdCommand { Id = id };
+        var result = await _deleteProductService.ExecuteAsync(command);
+        return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get([FromQuery] GetAllProductsParameter filter)
+    {
+        var query = new GetAllProductsQuery { PageNumber = filter.PageNumber, PageSize = filter.PageSize };
+        var result = await _getAllProductsService.ExecuteAsync(query);
+        return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int id)
+    {
+        var query = new GetProductByIdQuery { Id = id };
+        var result = await _getProductByIdService.ExecuteAsync(query);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Post(CreateProductCommand command, CancellationToken cancellationToken)
+    {
+        var result = await _createProductService.CreateAsync(command, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize]
+    public async Task<IActionResult> Put(int id, UpdateProductCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest();
+
+        var result = await _updateProductService.ExecuteAsync(command);
+        return Ok(result);
     }
 }
