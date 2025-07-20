@@ -1,13 +1,10 @@
 ﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 using System.Threading.Tasks;
 
-namespace Application.Interfaces.Repositories
+namespace Application.Interfaces.Repositories;
+
+public interface IProductRepositoryAsync : IGenericRepositoryAsync<Product>
 {
-    public interface IProductRepositoryAsync : IGenericRepositoryAsync<Product>
-    {
-        Task<bool> IsUniqueBarcodeAsync(string barcode);
-    }
+    Task<bool> IsUniqueBarcodeAsync(string barcode);
 }

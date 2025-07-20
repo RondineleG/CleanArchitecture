@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain.Common
+namespace Domain.Common;
+
+public abstract class BaseEntity<T> : IEntity<T>
 {
-    public abstract class BaseEntity<T>:IEntity<T>
-    {
-        [Key] public virtual T Id { get; set; }
-    }
+    [Key] public virtual T Id { get; set; }
+}
 
-    public abstract class BaseEntity:IEntity<int>
-    {
-        public virtual int Id { get; set; }
-    }
+public abstract class BaseEntity : IEntity<int>
+{
+    public virtual int Id { get; set; }
 }

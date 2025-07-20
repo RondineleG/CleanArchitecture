@@ -1,20 +1,18 @@
 ﻿using Application.Features.Products.Commands.CreateProduct;
 using Application.Features.Products.Queries.GetAllProducts;
-using AutoMapper;
-using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Application.Mappings
+using AutoMapper;
+
+using Domain.Entities;
+
+namespace Application.Mappings;
+
+public class GeneralProfile : Profile
 {
-    public class GeneralProfile : Profile
+    public GeneralProfile()
     {
-        public GeneralProfile()
-        {
-            CreateMap<Product, GetAllProductsViewModel>().ReverseMap();
-            CreateMap<CreateProductCommand, Product>();
-            CreateMap<GetAllProductsQuery, GetAllProductsParameter>();
-        }
+        _ = CreateMap<Product, GetAllProductsViewModel>().ReverseMap();
+        _ = CreateMap<CreateProductCommand, Product>();
+        _ = CreateMap<GetAllProductsQuery, GetAllProductsParameter>();
     }
 }
