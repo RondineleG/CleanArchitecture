@@ -13,8 +13,8 @@ public static class ServiceRegistration
 {
     public static void AddSharedInfrastructure(this IServiceCollection services, IConfiguration _config)
     {
-        _ = services.Configure<MailSettings>(_config.GetSection("MailSettings"));
-        _ = services.AddTransient<IDateTimeService, DateTimeService>();
-        _ = services.AddTransient<IEmailService, EmailService>();
+         services.Configure<MailSettings>(_config.GetSection("MailSettings"));
+         services.AddTransient<IDateTimeService, DateTimeService>();
+         services.AddTransient<IEmailService, EmailService>();
     }
 }

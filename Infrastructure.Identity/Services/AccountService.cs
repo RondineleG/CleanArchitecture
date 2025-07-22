@@ -109,7 +109,7 @@ public class AccountService : IAccountService
 
         string code = await _userManager.GeneratePasswordResetTokenAsync(account).ConfigureAwait(false);
         string route = "api/account/reset-password/";
-        _ = new Uri(string.Concat($"{origin}/", route));
+         new Uri(string.Concat($"{origin}/", route));
         var emailRequest = new EmailRequest()
         {
             Body = $"You reset token is - {code}",
@@ -139,7 +139,7 @@ public class AccountService : IAccountService
             IdentityResult result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                _ = await _userManager.AddToRoleAsync(user, Roles.Basic.ToString()).ConfigureAwait(false);
+                 await _userManager.AddToRoleAsync(user, Roles.Basic.ToString()).ConfigureAwait(false);
                 string verificationUri = await SendVerificationEmail(user, origin).ConfigureAwait(false);
                 //TODO: Attach Email Service here and configure it via appsettings
                 await _emailService.SendAsync(new EmailRequest() { From = "mail@codewithmukesh.com", To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration" }).ConfigureAwait(false);

@@ -11,7 +11,7 @@ public static class ServiceExtensions
 {
     public static void AddApiVersioningExtension(this IServiceCollection services)
     {
-        _ = services.AddApiVersioning(config =>
+         services.AddApiVersioning(config =>
         {
             config.DefaultApiVersion = new ApiVersion(1, 0);
             config.AssumeDefaultVersionWhenUnspecified = true;
@@ -21,7 +21,7 @@ public static class ServiceExtensions
 
     public static void AddSwaggerExtension(this IServiceCollection services)
     {
-        _ = services.AddSwaggerGen(c =>
+         services.AddSwaggerGen(c =>
        {
            c.IncludeXmlComments(string.Format(@"{0}\CleanArchitecture.WebApi.xml", System.AppDomain.CurrentDomain.BaseDirectory));
            c.SwaggerDoc("v1", new OpenApiInfo

@@ -22,20 +22,20 @@ public class AccountController : ControllerBase
     [HttpPost("authenticate")]
     public async Task<IActionResult> AuthenticateAsync(AuthenticationRequest request)
     {
-        return Ok(await _accountService.AuthenticateAsync(request, GenerateIPAddress()));
+        return Ok(await _accountService.AuthenticateAsync(request, GenerateIPAddress()).ConfigureAwait(false));
     }
 
     [HttpGet("confirm-email")]
     public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
     {
-        _ = Request.Headers["origin"];
-        return Ok(await _accountService.ConfirmEmailAsync(userId, code));
+        var origin = Request.Headers["origin"].ToString();
+        return Ok(await _accountService.ConfirmEmailAsync(userId, code).ConfigureAwait(false));
     }
 
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
     {
-        await _accountService.ForgotPassword(model, Request.Headers["origin"]);
+        await _accountService.ForgotPassword(model, Request.Headers["origin"]).ConfigureAwait(false);
         return Ok();
     }
 
@@ -43,13 +43,13 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> RegisterAsync(RegisterRequest request)
     {
         Microsoft.Extensions.Primitives.StringValues origin = Request.Headers["origin"];
-        return Ok(await _accountService.RegisterAsync(request, origin));
+        return Ok(await _accountService.RegisterAsync(request, origin).ConfigureAwait(false));
     }
 
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
     {
-        return Ok(await _accountService.ResetPassword(model));
+        return Ok(await _accountService.ResetPassword(model).ConfigureAwait(false));
     }
 
     private string GenerateIPAddress()

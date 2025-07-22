@@ -8,13 +8,13 @@ public static class AppExtensions
 {
     public static void UseErrorHandlingMiddleware(this IApplicationBuilder app)
     {
-        _ = app.UseMiddleware<ErrorHandlerMiddleware>();
+         app.UseMiddleware<ErrorHandlerMiddleware>();
     }
 
     public static void UseSwaggerExtension(this IApplicationBuilder app)
     {
-        _ = app.UseSwagger();
-        _ = app.UseSwaggerUI(c =>
+         app.UseSwagger();
+         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "CleanArchitecture.WebApi");
         });

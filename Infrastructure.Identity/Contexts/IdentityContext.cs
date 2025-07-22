@@ -15,39 +15,39 @@ public class IdentityContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        _ = builder.HasDefaultSchema("Identity");
-        _ = builder.Entity<ApplicationUser>(entity =>
+         builder.HasDefaultSchema("Identity");
+         builder.Entity<ApplicationUser>(entity =>
         {
-            _ = entity.ToTable(name: "User");
+             entity.ToTable(name: "User");
         });
 
-        _ = builder.Entity<IdentityRole>(entity =>
+         builder.Entity<IdentityRole>(entity =>
         {
-            _ = entity.ToTable(name: "Role");
+             entity.ToTable(name: "Role");
         });
-        _ = builder.Entity<IdentityUserRole<string>>(entity =>
+         builder.Entity<IdentityUserRole<string>>(entity =>
         {
-            _ = entity.ToTable("UserRoles");
-        });
-
-        _ = builder.Entity<IdentityUserClaim<string>>(entity =>
-        {
-            _ = entity.ToTable("UserClaims");
+             entity.ToTable("UserRoles");
         });
 
-        _ = builder.Entity<IdentityUserLogin<string>>(entity =>
+         builder.Entity<IdentityUserClaim<string>>(entity =>
         {
-            _ = entity.ToTable("UserLogins");
+             entity.ToTable("UserClaims");
         });
 
-        _ = builder.Entity<IdentityRoleClaim<string>>(entity =>
+         builder.Entity<IdentityUserLogin<string>>(entity =>
         {
-            _ = entity.ToTable("RoleClaims");
+             entity.ToTable("UserLogins");
         });
 
-        _ = builder.Entity<IdentityUserToken<string>>(entity =>
+         builder.Entity<IdentityRoleClaim<string>>(entity =>
         {
-            _ = entity.ToTable("UserTokens");
+             entity.ToTable("RoleClaims");
+        });
+
+         builder.Entity<IdentityUserToken<string>>(entity =>
+        {
+             entity.ToTable("UserTokens");
         });
     }
 }

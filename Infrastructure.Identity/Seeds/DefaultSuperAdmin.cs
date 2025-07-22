@@ -28,11 +28,11 @@ public static class DefaultSuperAdmin
             ApplicationUser user = await userManager.FindByEmailAsync(defaultUser.Email);
             if (user == null)
             {
-                _ = await userManager.CreateAsync(defaultUser, "123Pa$$word!");
-                _ = await userManager.AddToRoleAsync(defaultUser, Roles.Basic.ToString());
-                _ = await userManager.AddToRoleAsync(defaultUser, Roles.Moderator.ToString());
-                _ = await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
-                _ = await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());
+                 await userManager.CreateAsync(defaultUser, "123Pa$$word!");
+                 await userManager.AddToRoleAsync(defaultUser, Roles.Basic.ToString());
+                 await userManager.AddToRoleAsync(defaultUser, Roles.Moderator.ToString());
+                 await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
+                 await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());
             }
         }
     }

@@ -11,7 +11,7 @@ public class AuthenticationHelper
 {
     public static void ConfigureService(IServiceCollection service, string Issuer, string Audience, string Key)
     {
-        _ = service.AddAuthentication(options =>
+         service.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -28,8 +28,8 @@ public static class DefaultBasicUser
             ApplicationUser user = await userManager.FindByEmailAsync(defaultUser.Email);
             if (user == null)
             {
-                _ = await userManager.CreateAsync(defaultUser, "123Pa$$word!");
-                _ = await userManager.AddToRoleAsync(defaultUser, Roles.Basic.ToString());
+                 await userManager.CreateAsync(defaultUser, "123Pa$$word!");
+                 await userManager.AddToRoleAsync(defaultUser, Roles.Basic.ToString());
             }
         }
     }

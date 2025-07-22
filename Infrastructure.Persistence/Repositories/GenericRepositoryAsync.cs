@@ -21,15 +21,15 @@ public class GenericRepositoryAsync<T, TId> : IGenericRepositoryAsync<T, TId> wh
 
     public async Task<T> AddAsync(T entity)
     {
-        _ = await _dbContext.Set<T>().AddAsync(entity);
-        _ = await _dbContext.SaveChangesAsync();
+         await _dbContext.Set<T>().AddAsync(entity);
+         await _dbContext.SaveChangesAsync();
         return entity;
     }
 
     public async Task DeleteAsync(T entity)
     {
-        _ = _dbContext.Set<T>().Remove(entity);
-        _ = await _dbContext.SaveChangesAsync();
+         _dbContext.Set<T>().Remove(entity);
+         await _dbContext.SaveChangesAsync();
     }
 
     public async Task<IReadOnlyList<T>> GetAllAsync()
@@ -57,7 +57,7 @@ public class GenericRepositoryAsync<T, TId> : IGenericRepositoryAsync<T, TId> wh
     public async Task UpdateAsync(T entity)
     {
         _dbContext.Entry(entity).State = EntityState.Modified;
-        _ = await _dbContext.SaveChangesAsync();
+         await _dbContext.SaveChangesAsync();
     }
 }
 

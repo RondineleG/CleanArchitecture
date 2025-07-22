@@ -8,41 +8,41 @@ public partial class NewSchema : Migration
 {
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        _ = migrationBuilder.DropTable(
+         migrationBuilder.DropTable(
             name: "RoleClaims",
             schema: "Identity");
 
-        _ = migrationBuilder.DropTable(
+         migrationBuilder.DropTable(
             name: "UserClaims",
             schema: "Identity");
 
-        _ = migrationBuilder.DropTable(
+         migrationBuilder.DropTable(
             name: "UserLogins",
             schema: "Identity");
 
-        _ = migrationBuilder.DropTable(
+         migrationBuilder.DropTable(
             name: "UserRoles",
             schema: "Identity");
 
-        _ = migrationBuilder.DropTable(
+         migrationBuilder.DropTable(
             name: "UserTokens",
             schema: "Identity");
 
-        _ = migrationBuilder.DropTable(
+         migrationBuilder.DropTable(
             name: "Role",
             schema: "Identity");
 
-        _ = migrationBuilder.DropTable(
+         migrationBuilder.DropTable(
             name: "User",
             schema: "Identity");
     }
 
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        _ = migrationBuilder.EnsureSchema(
+         migrationBuilder.EnsureSchema(
             name: "Identity");
 
-        _ = migrationBuilder.CreateTable(
+         migrationBuilder.CreateTable(
             name: "Role",
             schema: "Identity",
             columns: table => new
@@ -54,10 +54,10 @@ public partial class NewSchema : Migration
             },
             constraints: table =>
             {
-                _ = table.PrimaryKey("PK_Role", x => x.Id);
+                 table.PrimaryKey("PK_Role", x => x.Id);
             });
 
-        _ = migrationBuilder.CreateTable(
+         migrationBuilder.CreateTable(
             name: "User",
             schema: "Identity",
             columns: table => new
@@ -82,10 +82,10 @@ public partial class NewSchema : Migration
             },
             constraints: table =>
             {
-                _ = table.PrimaryKey("PK_User", x => x.Id);
+                 table.PrimaryKey("PK_User", x => x.Id);
             });
 
-        _ = migrationBuilder.CreateTable(
+         migrationBuilder.CreateTable(
             name: "RoleClaims",
             schema: "Identity",
             columns: table => new
@@ -98,8 +98,8 @@ public partial class NewSchema : Migration
             },
             constraints: table =>
             {
-                _ = table.PrimaryKey("PK_RoleClaims", x => x.Id);
-                _ = table.ForeignKey(
+                 table.PrimaryKey("PK_RoleClaims", x => x.Id);
+                 table.ForeignKey(
                     name: "FK_RoleClaims_Role_RoleId",
                     column: x => x.RoleId,
                     principalSchema: "Identity",
@@ -108,7 +108,7 @@ public partial class NewSchema : Migration
                     onDelete: ReferentialAction.Cascade);
             });
 
-        _ = migrationBuilder.CreateTable(
+         migrationBuilder.CreateTable(
             name: "UserClaims",
             schema: "Identity",
             columns: table => new
@@ -121,8 +121,8 @@ public partial class NewSchema : Migration
             },
             constraints: table =>
             {
-                _ = table.PrimaryKey("PK_UserClaims", x => x.Id);
-                _ = table.ForeignKey(
+                 table.PrimaryKey("PK_UserClaims", x => x.Id);
+                 table.ForeignKey(
                     name: "FK_UserClaims_User_UserId",
                     column: x => x.UserId,
                     principalSchema: "Identity",
@@ -131,7 +131,7 @@ public partial class NewSchema : Migration
                     onDelete: ReferentialAction.Cascade);
             });
 
-        _ = migrationBuilder.CreateTable(
+         migrationBuilder.CreateTable(
             name: "UserLogins",
             schema: "Identity",
             columns: table => new
@@ -143,8 +143,8 @@ public partial class NewSchema : Migration
             },
             constraints: table =>
             {
-                _ = table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                _ = table.ForeignKey(
+                 table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                 table.ForeignKey(
                     name: "FK_UserLogins_User_UserId",
                     column: x => x.UserId,
                     principalSchema: "Identity",
@@ -153,7 +153,7 @@ public partial class NewSchema : Migration
                     onDelete: ReferentialAction.Cascade);
             });
 
-        _ = migrationBuilder.CreateTable(
+         migrationBuilder.CreateTable(
             name: "UserRoles",
             schema: "Identity",
             columns: table => new
@@ -163,15 +163,15 @@ public partial class NewSchema : Migration
             },
             constraints: table =>
             {
-                _ = table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
-                _ = table.ForeignKey(
+                 table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
+                 table.ForeignKey(
                     name: "FK_UserRoles_Role_RoleId",
                     column: x => x.RoleId,
                     principalSchema: "Identity",
                     principalTable: "Role",
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Cascade);
-                _ = table.ForeignKey(
+                 table.ForeignKey(
                     name: "FK_UserRoles_User_UserId",
                     column: x => x.UserId,
                     principalSchema: "Identity",
@@ -180,7 +180,7 @@ public partial class NewSchema : Migration
                     onDelete: ReferentialAction.Cascade);
             });
 
-        _ = migrationBuilder.CreateTable(
+         migrationBuilder.CreateTable(
             name: "UserTokens",
             schema: "Identity",
             columns: table => new
@@ -192,8 +192,8 @@ public partial class NewSchema : Migration
             },
             constraints: table =>
             {
-                _ = table.PrimaryKey("PK_UserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                _ = table.ForeignKey(
+                 table.PrimaryKey("PK_UserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                 table.ForeignKey(
                     name: "FK_UserTokens_User_UserId",
                     column: x => x.UserId,
                     principalSchema: "Identity",
@@ -202,7 +202,7 @@ public partial class NewSchema : Migration
                     onDelete: ReferentialAction.Cascade);
             });
 
-        _ = migrationBuilder.CreateIndex(
+         migrationBuilder.CreateIndex(
             name: "RoleNameIndex",
             schema: "Identity",
             table: "Role",
@@ -210,19 +210,19 @@ public partial class NewSchema : Migration
             unique: true,
             filter: "[NormalizedName] IS NOT NULL");
 
-        _ = migrationBuilder.CreateIndex(
+         migrationBuilder.CreateIndex(
             name: "IX_RoleClaims_RoleId",
             schema: "Identity",
             table: "RoleClaims",
             column: "RoleId");
 
-        _ = migrationBuilder.CreateIndex(
+         migrationBuilder.CreateIndex(
             name: "EmailIndex",
             schema: "Identity",
             table: "User",
             column: "NormalizedEmail");
 
-        _ = migrationBuilder.CreateIndex(
+         migrationBuilder.CreateIndex(
             name: "UserNameIndex",
             schema: "Identity",
             table: "User",
@@ -230,19 +230,19 @@ public partial class NewSchema : Migration
             unique: true,
             filter: "[NormalizedUserName] IS NOT NULL");
 
-        _ = migrationBuilder.CreateIndex(
+         migrationBuilder.CreateIndex(
             name: "IX_UserClaims_UserId",
             schema: "Identity",
             table: "UserClaims",
             column: "UserId");
 
-        _ = migrationBuilder.CreateIndex(
+         migrationBuilder.CreateIndex(
             name: "IX_UserLogins_UserId",
             schema: "Identity",
             table: "UserLogins",
             column: "UserId");
 
-        _ = migrationBuilder.CreateIndex(
+         migrationBuilder.CreateIndex(
             name: "IX_UserRoles_RoleId",
             schema: "Identity",
             table: "UserRoles",

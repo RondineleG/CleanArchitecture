@@ -8,13 +8,13 @@ public partial class Updat : Migration
 {
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        _ = migrationBuilder.DropTable(
+         migrationBuilder.DropTable(
             name: "Products");
     }
 
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        _ = migrationBuilder.CreateTable(
+         migrationBuilder.CreateTable(
             name: "Products",
             columns: table => new
             {
@@ -31,7 +31,7 @@ public partial class Updat : Migration
             },
             constraints: table =>
             {
-                _ = table.PrimaryKey("PK_Products", x => x.Id);
+                 table.PrimaryKey("PK_Products", x => x.Id);
             });
     }
 }
