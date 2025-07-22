@@ -1,5 +1,4 @@
-﻿using Application.Behaviours;
-using Application.Exceptions;
+﻿using Application.Exceptions;
 using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;

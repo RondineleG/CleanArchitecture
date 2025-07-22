@@ -19,7 +19,6 @@ public static class MappingExtensions
         };
     }
 
-    // CreateProductCommand -> Product
     public static Product ToEntity(this CreateProductCommand command)
     {
         return new Product
@@ -31,7 +30,6 @@ public static class MappingExtensions
         };
     }
 
-    // GetAllProductsQuery -> GetAllProductsParameter
     public static GetAllProductsParameter ToParameter(this GetAllProductsQuery query)
     {
         return new GetAllProductsParameter
@@ -41,7 +39,6 @@ public static class MappingExtensions
         };
     }
 
-    // Product <-> GetAllProductsViewModel
     public static GetAllProductsViewModel ToViewModel(this Product product)
     {
         return new GetAllProductsViewModel

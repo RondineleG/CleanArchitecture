@@ -1,5 +1,4 @@
-﻿using Application.Behaviours;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Mappings;
 using Application.Wrappers;
