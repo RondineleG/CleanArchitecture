@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces;
+namespace Application.Interfaces.Validations;
 
 public interface IRequestPipelineExecutor
 {

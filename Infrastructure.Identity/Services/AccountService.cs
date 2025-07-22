@@ -2,7 +2,7 @@
 using Application.DTOs.Email;
 using Application.Enums;
 using Application.Exceptions;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Application.Wrappers;
 
 using Domain.Settings;

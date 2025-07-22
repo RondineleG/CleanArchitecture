@@ -1,5 +1,5 @@
 ﻿using Application.Behaviours;
-using Application.Interfaces;
+using Application.Interfaces.Validations;
 
 using Microsoft.Extensions.DependencyInjection;
 

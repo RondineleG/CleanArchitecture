@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Account;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,5 @@
-﻿using Application.Interfaces;
-using Application.Interfaces.Repositories;
+﻿using Application.Interfaces.Repositories;
+using Application.Interfaces.Validations;
 using Application.Mappings;
 using Application.Wrappers;
 

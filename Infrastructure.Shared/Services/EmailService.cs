@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.Email;
 using Application.Exceptions;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 
 using Domain.Settings;
 

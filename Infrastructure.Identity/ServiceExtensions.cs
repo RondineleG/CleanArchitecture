@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+﻿using Application.Interfaces.Services;
 using Application.Wrappers;
 
 using Domain.Settings;

@@ -1,5 +1,5 @@
 using Application;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 
 using Infrastructure.Identity;
 using Infrastructure.Persistence;

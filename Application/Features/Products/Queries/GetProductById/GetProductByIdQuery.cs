@@ -1,6 +1,6 @@
 ﻿using Application.Exceptions;
-using Application.Interfaces;
 using Application.Interfaces.Repositories;
+using Application.Interfaces.Validations;
 using Application.Wrappers;
 
 using Domain.Entities;

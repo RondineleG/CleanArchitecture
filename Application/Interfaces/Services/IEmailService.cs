@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-namespace Application.Interfaces;
+namespace Application.Interfaces.Services;
 
 public interface IEmailService
 {

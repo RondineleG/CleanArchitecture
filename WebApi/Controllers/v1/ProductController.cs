@@ -3,7 +3,7 @@ using Application.Features.Products.Commands.DeleteProductById;
 using Application.Features.Products.Commands.UpdateProduct;
 using Application.Features.Products.Queries.GetAllProducts;
 using Application.Features.Products.Queries.GetProductById;
-using Application.Interfaces;
+using Application.Interfaces.Validations;
 
 using Domain.Entities;
 
