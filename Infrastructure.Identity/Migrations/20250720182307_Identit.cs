@@ -1,14 +1,23 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+using System;
 
 #nullable disable
 
 namespace Infrastructure.Identity.Migrations
 {
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public partial class Identit : Migration
     {
-        /// <inheritdoc />
+        /// <inheritdoc/>
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "RefreshToken",
+                schema: "Identity");
+        }
+
+        /// <inheritdoc/>
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -43,14 +52,6 @@ namespace Infrastructure.Identity.Migrations
                 schema: "Identity",
                 table: "RefreshToken",
                 column: "ApplicationUserId");
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "RefreshToken",
-                schema: "Identity");
         }
     }
 }
