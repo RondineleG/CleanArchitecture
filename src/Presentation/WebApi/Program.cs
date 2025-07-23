@@ -21,7 +21,7 @@ public class Program
         .UseSerilog() //Uses Serilog instead of default .NET Logger
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                 webBuilder.UseStartup<Startup>();
+                webBuilder.UseStartup<Startup>();
             });
 
     public static async Task Main(string[] args)

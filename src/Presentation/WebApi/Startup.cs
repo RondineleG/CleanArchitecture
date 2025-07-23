@@ -29,25 +29,25 @@ public class Startup
     {
         if (env.IsDevelopment())
         {
-             app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
         }
         else
         {
-             app.UseExceptionHandler("/Error");
-             app.UseHsts();
+            app.UseExceptionHandler("/Error");
+            app.UseHsts();
         }
-         app.UseHttpsRedirection();
-         app.UseRouting();
-         app.UseAuthentication();
-         app.UseAuthorization();
+        app.UseHttpsRedirection();
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseSwaggerExtension();
         app.UseErrorHandlingMiddleware();
-         app.UseHealthChecks("/health");
+        app.UseHealthChecks("/health");
 
-         app.UseEndpoints(endpoints =>
-         {
-              endpoints.MapControllers();
-         });
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 
     public void ConfigureServices(IServiceCollection services)
