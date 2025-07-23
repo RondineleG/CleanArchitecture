@@ -80,7 +80,9 @@ public class ProductController : BaseApiController
     public async Task<IActionResult> Put(int id, UpdateProductCommand command)
     {
         if (id != command.Id)
+        {
             return BadRequest();
+        }
 
         var result = await _updateProductService.ExecuteAsync(command, default).ConfigureAwait(false);
         return Ok(result);

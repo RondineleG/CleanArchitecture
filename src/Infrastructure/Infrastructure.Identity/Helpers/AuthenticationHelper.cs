@@ -11,26 +11,26 @@ public class AuthenticationHelper
 {
     public static void ConfigureService(IServiceCollection service, string Issuer, string Audience, string Key)
     {
-        service.AddAuthentication(options =>
+        service.AddAuthentication(
+            options =>
        {
            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
        })
 
-           .AddJwtBearer(o =>
-           {
-               o.TokenValidationParameters = new TokenValidationParameters
-               {
-                   ValidateIssuerSigningKey = true,
-                   ValidateIssuer = true,
-                   ValidateAudience = true,
-                   ValidateLifetime = true,
-                   ClockSkew = TimeSpan.Zero,
+            .AddJwtBearer(
+                o => o.TokenValidationParameters =
+                    new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
 
-                   ValidIssuer = Issuer,
-                   ValidAudience = Audience,
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key))
-               };
-           });
+                        ValidIssuer = Issuer,
+                        ValidAudience = Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key))
+                    });
     }
 }

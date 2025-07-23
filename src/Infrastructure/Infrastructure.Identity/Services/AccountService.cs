@@ -28,7 +28,8 @@ namespace Infrastructure.Identity.Services;
 
 public class AccountService : IAccountService
 {
-    public AccountService(UserManager<ApplicationUser> userManager,
+    public AccountService(
+        UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IOptions<JWTSettings> jwtSettings,
         IDateTimeService dateTimeService,
@@ -40,7 +41,7 @@ public class AccountService : IAccountService
         _jwtSettings = jwtSettings.Value;
         _dateTimeService = dateTimeService;
         _signInManager = signInManager;
-        this._emailService = emailService;
+        _emailService = emailService;
     }
 
     private readonly IDateTimeService _dateTimeService;
@@ -72,7 +73,7 @@ public class AccountService : IAccountService
             throw new ApiException($"Account Not Confirmed for '{request.Email}'.");
         }
         var jwtSecurityToken = await GenerateJWToken(user).ConfigureAwait(false);
-        var response = new AuthenticationResponse()
+        var response = new AuthenticationResponse
         {
             Id = user.Id,
             JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
@@ -93,8 +94,8 @@ public class AccountService : IAccountService
         code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
         var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAwait(false);
         return result.Succeeded
-            ? new Response<string>(user.Id, message: $"Account Confirmed for {user.Email}. You can now use the /api/Account/authenticate endpoint.")
-            : throw new ApiException($"An error occured while confirming {user.Email}.");
+            ? (new Response<string>(user.Id, message: $"Account Confirmed for {user.Email}. You can now use the /api/Account/authenticate endpoint."))
+            : (throw new ApiException($"An error occured while confirming {user.Email}."));
     }
 
     public async Task ForgotPassword(ForgotPasswordRequest model, string origin)
@@ -110,7 +111,7 @@ public class AccountService : IAccountService
         string code = await _userManager.GeneratePasswordResetTokenAsync(account).ConfigureAwait(false);
         string route = "api/account/reset-password/";
         new Uri(string.Concat($"{origin}/", route));
-        var emailRequest = new EmailRequest()
+        var emailRequest = new EmailRequest
         {
             Body = $"You reset token is - {code}",
             To = model.Email,
@@ -126,7 +127,7 @@ public class AccountService : IAccountService
         {
             throw new ApiException($"Username '{request.UserName}' is already taken.");
         }
-        var user = new ApplicationUser()
+        var user = new ApplicationUser
         {
             Email = request.Email,
             FirstName = request.FirstName,
@@ -142,7 +143,15 @@ public class AccountService : IAccountService
                 await _userManager.AddToRoleAsync(user, Roles.Basic.ToString()).ConfigureAwait(false);
                 string verificationUri = await SendVerificationEmail(user, origin).ConfigureAwait(false);
                 //TODO: Attach Email Service here and configure it via appsettings
-                await _emailService.SendAsync(new EmailRequest() { From = "mail@codewithmukesh.com", To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration" }).ConfigureAwait(false);
+                await _emailService.SendAsync(
+                    new EmailRequest
+                    {
+                        From = "mail@codewithmukesh.com",
+                        To = user.Email,
+                        Body = $"Please confirm your account by visiting this URL {verificationUri}",
+                        Subject = "Confirm Registration"
+                    })
+                    .ConfigureAwait(false);
                 return new Response<string>(user.Id, message: $"User Registered. Please confirm your account by visiting this URL {verificationUri}");
             }
             else
@@ -158,11 +167,12 @@ public class AccountService : IAccountService
 
     public async Task<Response<string>> ResetPassword(ResetPasswordRequest model)
     {
-        var account = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false) ?? throw new ApiException($"No Accounts Registered with {model.Email}.");
+        var account = (await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false)) ??
+            (throw new ApiException($"No Accounts Registered with {model.Email}."));
         var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password).ConfigureAwait(false);
         return result.Succeeded
-            ? new Response<string>(model.Email, message: $"Password Resetted.")
-            : throw new ApiException($"Error occured while reseting the password.");
+            ? (new Response<string>(model.Email, message: $"Password Resetted."))
+            : (throw new ApiException($"Error occured while reseting the password."));
     }
 
     private static string RandomTokenString()
@@ -193,9 +203,8 @@ public class AccountService : IAccountService
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim("uid", user.Id),
             new Claim("ip", ipAddress)
-        }
-        .Union(userClaims)
-        .Union(roleClaims);
+        }.Union(userClaims)
+            .Union(roleClaims);
 
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);

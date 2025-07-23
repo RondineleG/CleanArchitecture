@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 
 using MimeKit;
 
+using System;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Shared.Services;
@@ -50,7 +51,7 @@ public class EmailService : IEmailService
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex.Message, ex);
             throw new ApiException(ex.Message);

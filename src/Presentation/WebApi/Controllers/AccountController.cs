@@ -3,6 +3,7 @@ using Application.Interfaces.Services;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 using System.Threading.Tasks;
 
@@ -42,7 +43,7 @@ public class AccountController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> RegisterAsync(RegisterRequest request)
     {
-        Microsoft.Extensions.Primitives.StringValues origin = Request.Headers["origin"];
+        StringValues origin = Request.Headers["origin"];
         return Ok(await _accountService.RegisterAsync(request, origin).ConfigureAwait(false));
     }
 
@@ -55,7 +56,7 @@ public class AccountController : ControllerBase
     private string GenerateIPAddress()
     {
         return Request.Headers.ContainsKey("X-Forwarded-For")
-            ? (string)Request.Headers["X-Forwarded-For"]
+            ? ((string)Request.Headers["X-Forwarded-For"])
             : HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
     }
 }

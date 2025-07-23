@@ -44,10 +44,7 @@ public class Startup
         app.UseErrorHandlingMiddleware();
         app.UseHealthChecks("/health");
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
+        app.UseEndpoints(endpoints => endpoints.MapControllers());
     }
 
     public void ConfigureServices(IServiceCollection services)

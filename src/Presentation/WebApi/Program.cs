@@ -1,4 +1,5 @@
 using Infrastructure.Identity.Models;
+using Infrastructure.Identity.Seeds;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -16,13 +17,12 @@ namespace WebApi;
 
 public class Program
 {
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-        .UseSerilog() //Uses Serilog instead of default .NET Logger
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
+    public static IHostBuilder CreateHostBuilder(string[] args)
+    {
+        return Host.CreateDefaultBuilder(args)
+            .UseSerilog() //Uses Serilog instead of default .NET Logger
+            .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+    }
 
     public static async Task Main(string[] args)
     {
@@ -33,7 +33,8 @@ public class Program
 
         //Initialize Logger
         Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(config)
+            .ReadFrom
+            .Configuration(config)
             .CreateLogger();
         IHost host = CreateHostBuilder(args).Build();
         using (IServiceScope scope = host.Services.CreateScope())
@@ -45,9 +46,9 @@ public class Program
                 UserManager<ApplicationUser> userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 RoleManager<IdentityRole> roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-                await Infrastructure.Identity.Seeds.DefaultRoles.SeedAsync(userManager, roleManager);
-                await Infrastructure.Identity.Seeds.DefaultSuperAdmin.SeedAsync(userManager, roleManager);
-                await Infrastructure.Identity.Seeds.DefaultBasicUser.SeedAsync(userManager, roleManager);
+                await DefaultRoles.SeedAsync(userManager, roleManager);
+                await DefaultSuperAdmin.SeedAsync(userManager, roleManager);
+                await DefaultBasicUser.SeedAsync(userManager, roleManager);
                 Log.Information("Finished Seeding Default Data");
                 Log.Information("Application Starting");
             }

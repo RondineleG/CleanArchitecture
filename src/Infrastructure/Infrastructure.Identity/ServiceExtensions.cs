@@ -27,12 +27,14 @@ public static class ServiceExtensions
     {
         if (configuration.GetValue<bool>("UseInMemoryDatabase"))
         {
-            services.AddDbContext<IdentityContext>(options =>
+            services.AddDbContext<IdentityContext>(
+                options =>
                 options.UseInMemoryDatabase("IdentityDb"));
         }
         else
         {
-            services.AddDbContext<IdentityContext>(options =>
+            services.AddDbContext<IdentityContext>(
+                options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)));
@@ -47,12 +49,14 @@ public static class ServiceExtensions
         #endregion Services
 
         services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
-        services.AddAuthentication(options =>
+        services.AddAuthentication(
+            options =>
        {
            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
        })
-           .AddJwtBearer(o =>
+            .AddJwtBearer(
+                o =>
            {
                o.RequireHttpsMetadata = false;
                o.SaveToken = false;
@@ -67,31 +71,34 @@ public static class ServiceExtensions
                    ValidAudience = configuration["JWTSettings:Audience"],
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTSettings:Key"]))
                };
-               o.Events = new JwtBearerEvents()
+               o.Events = new JwtBearerEvents
                {
-                   OnAuthenticationFailed = c =>
-                   {
-                       c.NoResult();
-                       c.Response.StatusCode = 500;
-                       c.Response.ContentType = "text/plain";
-                       return c.Response.WriteAsync(c.Exception.ToString());
-                   },
-                   OnChallenge = context =>
-                   {
-                       context.HandleResponse();
-                       context.Response.StatusCode = 401;
-                       context.Response.ContentType = "application/json";
-                       string result = JsonSerializer.Serialize(new Response<string>("You are not Authorized"));
-                       return context.Response.WriteAsync(result);
-                   },
-                   OnForbidden = context =>
-                   {
-                       context.Response.StatusCode = 403;
-                       context.Response.ContentType = "application/json";
-                       string result = JsonSerializer.Serialize(new Response<string>("You are not authorized to access this resource"));
+                   OnAuthenticationFailed =
+                       c =>
+              {
+                  c.NoResult();
+                  c.Response.StatusCode = 500;
+                  c.Response.ContentType = "text/plain";
+                  return c.Response.WriteAsync(c.Exception.ToString());
+              },
+                   OnChallenge =
+                       context =>
+              {
+                  context.HandleResponse();
+                  context.Response.StatusCode = 401;
+                  context.Response.ContentType = "application/json";
+                  string result = JsonSerializer.Serialize(new Response<string>("You are not Authorized"));
+                  return context.Response.WriteAsync(result);
+              },
+                   OnForbidden =
+                       context =>
+              {
+                  context.Response.StatusCode = 403;
+                  context.Response.ContentType = "application/json";
+                  string result = JsonSerializer.Serialize(new Response<string>("You are not authorized to access this resource"));
 
-                       return context.Response.WriteAsync(result);
-                   },
+                  return context.Response.WriteAsync(result);
+              },
                };
            });
     }

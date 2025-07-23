@@ -34,7 +34,7 @@ public class ErrorHandlerMiddleware
 
             switch (error)
             {
-                case Application.Exceptions.ApiException:
+                case ApiException:
                 // custom application error
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
                 break;

@@ -16,6 +16,6 @@ public class ApplicationUser : IdentityUser
 
     public bool OwnsToken(string token)
     {
-        return this.RefreshTokens?.Find(x => x.Token == token) != null;
+        return RefreshTokens?.Find(x => x.Token == token) != null;
     }
 }
